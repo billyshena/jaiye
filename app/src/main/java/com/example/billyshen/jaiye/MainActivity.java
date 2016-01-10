@@ -55,11 +55,11 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i("okokokok", "okok");
 
-        genders.add(new Gender("This is my title", "someImageHere", "R.drawable.gender1"));
-        genders.add(new Gender("This is my title2", "someImageHere", "R.drawable.gender2"));
-        genders.add(new Gender("This is my title3", "someImageHere", "R.drawable.gender3"));
-        genders.add(new Gender("This is my title4", "someImageHere", "R.drawable.gender4"));
-
+        genders.add(new Gender("hip hop", "someImageHere", "gender1"));
+        genders.add(new Gender("azonto", "someImageHere", "gender2"));
+        genders.add(new Gender("coupe decale", "someImageHere", "gender3"));
+        genders.add(new Gender("afro trap", "someImageHere", "gender4"));
+        genders.add(new Gender("afro beats", "someImageHere", "gender5"));
     }
 
     private void populateList() {

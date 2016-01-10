@@ -31,6 +31,8 @@
         android:layout_alignParentTop="true"
         android:orientation="vertical"
         android:layout_centerHorizontal="true"
-        android:text="Header" />
+        android:text="DISCOVER"
+        android:background="#212121"
+        android:textColor="#ffffff" />
 
 </RelativeLayout>

@@ -5,17 +5,32 @@
     >
 
 
-
     <com.example.billyshen.jaiye.ResizableImageView
-        android:id="@+id/imageSplash"
+        android:id="@+id/genderImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="0dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         android:padding="0dp"
-        android:src="@drawable/gender2" />
+         />
 
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#c8191919">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/genderTitle"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:textColor="#ffffff" />
+    </RelativeLayout>
 
 
 </RelativeLayout>

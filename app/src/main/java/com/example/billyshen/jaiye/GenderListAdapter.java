@@ -46,15 +46,15 @@ class GenderListAdapter extends ArrayAdapter<Gender> {
             customView = inflater.inflate(R.layout.gender_row, parent, false);
         }
 
+        // Initialize Gender object to display its information
         Gender gender = getItem(position);
-        Log.d("gender", gender.getTitle());
-        //TextView genderTitle = (TextView) customView.findViewById(R.id.genderTitle);
-        //genderTitle.setText("This is my name bro" + position);
-        //ImageView genderImage = (ImageView) customView.findViewById(R.id.genderImage);
 
-
-        Log.d("display width", display.getWidth()+"");
-        Log.d("display height", display.getHeight() +"");
+        // Init UI elements
+        TextView genderTitle = (TextView) customView.findViewById(R.id.genderTitle);
+        genderTitle.setText(gender.getTitle().toUpperCase());
+        ImageView genderImage = (ImageView) customView.findViewById(R.id.genderImage);
+        int id = ctx.getResources().getIdentifier(gender.getResourceUrl(), "drawable", getContext().getPackageName());
+        genderImage.setImageResource(id);
 
         return customView;
     }
