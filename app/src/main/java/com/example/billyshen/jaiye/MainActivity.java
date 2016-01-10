@@ -55,11 +55,10 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i("okokokok", "okok");
 
-        genders.add(new Gender("This is my title", "someImageHere"));
-        genders.add(new Gender("This is my title2", "someImageHere"));
-        genders.add(new Gender("This is my title3", "someImageHere"));
-        genders.add(new Gender("This is my title4", "someImageHere"));
-
+        genders.add(new Gender("This is my title", "someImageHere", "R.drawable.gender1"));
+        genders.add(new Gender("This is my title2", "someImageHere", "R.drawable.gender2"));
+        genders.add(new Gender("This is my title3", "someImageHere", "R.drawable.gender3"));
+        genders.add(new Gender("This is my title4", "someImageHere", "R.drawable.gender4"));
 
     }
 
@@ -67,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         ArrayAdapter<Gender> adapter = new GenderListAdapter(MainActivity.this, (ArrayList<Gender>) genders);
         ListView list = (ListView) findViewById(R.id.lv_genders);
+        list.setDivider(null);
         list.setAdapter(adapter);
 
     }

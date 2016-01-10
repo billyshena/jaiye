@@ -8,10 +8,12 @@ public class Gender {
 
     private String title;
     private String image;
+    private String resourceUrl;
 
-    public Gender(String title, String image) {
+    public Gender(String title, String image, String resourceUrl) {
         this.title = title;
         this.image = image;
+        this.resourceUrl = resourceUrl;
     }
 
 
@@ -30,6 +32,15 @@ public class Gender {
     public void setImage(String image) {
         this.image = image;
     }
+
+    public String getResourceUrl() {
+        return resourceUrl;
+    }
+
+    public void setResourceUrl(String resourceUrl) {
+        this.resourceUrl = resourceUrl;
+    }
+
 
 
 

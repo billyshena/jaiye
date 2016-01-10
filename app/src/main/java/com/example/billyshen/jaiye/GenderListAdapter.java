@@ -9,9 +9,11 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,10 +29,12 @@ import java.util.ArrayList;
 class GenderListAdapter extends ArrayAdapter<Gender> {
 
     private final Context ctx;
+    private Display display;
 
     public GenderListAdapter(Context context, ArrayList<Gender> genders) {
         super(context, R.layout.gender_row, genders);
         ctx = context;
+        display = ((WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
     }
 
     @Override
@@ -39,26 +43,31 @@ class GenderListAdapter extends ArrayAdapter<Gender> {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View customView = convertView;
         if(customView == null) {
-            Log.d("custom view empty", "empty");
             customView = inflater.inflate(R.layout.gender_row, parent, false);
         }
+
         Gender gender = getItem(position);
         Log.d("gender", gender.getTitle());
-        TextView genderTitle = (TextView) customView.findViewById(R.id.genderTitle);
-        genderTitle.setText("This is my name bro" + position);
-        ImageView genderImage = (ImageView) customView.findViewById(R.id.genderImage);
-        Bitmap bp = crop(375, 100);
-        genderImage.setImageBitmap(bp);
+        //TextView genderTitle = (TextView) customView.findViewById(R.id.genderTitle);
+        //genderTitle.setText("This is my name bro" + position);
+        //ImageView genderImage = (ImageView) customView.findViewById(R.id.genderImage);
+
+
+        Log.d("display width", display.getWidth()+"");
+        Log.d("display height", display.getHeight() +"");
 
         return customView;
     }
 
 
 
+
     private Bitmap crop(int width, int height)
     {
         Bitmap bmp = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.gender1);
-        Bitmap resizedBmp = Bitmap.createBitmap(bmp, 0, 0, width, height);
+        Bitmap resizedBmp = Bitmap.createScaledBitmap(bmp, width, height, true);
         return resizedBmp;
     }
+
+
 }
