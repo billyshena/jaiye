@@ -17,16 +17,16 @@
     <TextView
         android:id="@+id/textView1"
         android:layout_width="fill_parent"
-        android:layout_height="40dp"
+        android:layout_height="100dp"
         android:gravity="center"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:text="Footer" />
+        android:background="#191919" />
 
     <TextView
         android:id="@+id/genders"
         android:layout_width="fill_parent"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:gravity="center"
         android:layout_alignParentTop="true"
         android:orientation="vertical"
@@ -34,5 +34,13 @@
         android:text="DISCOVER"
         android:background="#212121"
         android:textColor="#ffffff" />
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView2"
+        android:layout_alignBottom="@+id/textView1"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/logo" />
 
 </RelativeLayout>
