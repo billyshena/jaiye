@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="100dp">
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    >
 
 
 
@@ -9,9 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="0dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
         android:padding="0dp"
-        android:src="@drawable/gender1"
-        />
+        android:src="@drawable/gender2" />
+
 
 
 </RelativeLayout>
