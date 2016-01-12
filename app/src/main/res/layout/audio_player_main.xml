@@ -23,4 +23,36 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
+    <com.example.billyshen.jaiye.MaterialPlayPauseButton
+    android:id="@+id/materialPlayPauseButton"
+    android:layout_width="40dp"
+    android:layout_height="50dp"
+        android:layout_marginTop="63dp"
+        android:layout_below="@+id/seekBar"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="15dp"
+        android:layout_height="20dp"
+        android:id="@+id/imageView3"
+        android:src="@drawable/previous"
+        android:layout_marginRight="29dp"
+        android:layout_marginEnd="29dp"
+        android:layout_alignBottom="@+id/materialPlayPauseButton"
+        android:layout_toLeftOf="@+id/materialPlayPauseButton"
+        android:layout_toStartOf="@+id/materialPlayPauseButton"
+        android:layout_alignTop="@+id/materialPlayPauseButton" />
+
+    <ImageView
+        android:layout_width="15dp"
+        android:layout_height="20dp"
+        android:id="@+id/imageView4"
+        android:src="@drawable/next"
+        android:layout_alignBottom="@+id/materialPlayPauseButton"
+        android:layout_toRightOf="@+id/materialPlayPauseButton"
+        android:layout_toEndOf="@+id/materialPlayPauseButton"
+        android:layout_marginLeft="29dp"
+        android:layout_marginStart="29dp"
+        android:layout_alignTop="@+id/materialPlayPauseButton" />
+
 </RelativeLayout>
