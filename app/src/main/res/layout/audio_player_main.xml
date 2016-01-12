@@ -19,9 +19,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/seekBar"
+        android:minHeight="5dip"
+        android:maxHeight="5dip"
+        android:splitTrack="false"
+        android:progressDrawable="@layout/progressgradient"
         android:layout_below="@+id/imageView"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="false"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentRight="true"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="-7dp" />
 
     <com.example.billyshen.jaiye.MaterialPlayPauseButton
     android:id="@+id/materialPlayPauseButton"

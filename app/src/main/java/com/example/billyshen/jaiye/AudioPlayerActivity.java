@@ -46,7 +46,6 @@ public class AudioPlayerActivity extends AppCompatActivity {
             gender = extras.getString("gender");
         }
 
-
         initPlayPause();
         initMediaPlayer();
         initSeekBar();
@@ -64,6 +63,9 @@ public class AudioPlayerActivity extends AppCompatActivity {
     private void initSeekBar() {
 
         sb = (SeekBar) findViewById(R.id.seekBar);
+        sb.getThumb().mutate().setAlpha(0);
+        sb.setPadding(0, 0, 0, 0);
+
 
         updateSeekBar = new Thread(){
 
