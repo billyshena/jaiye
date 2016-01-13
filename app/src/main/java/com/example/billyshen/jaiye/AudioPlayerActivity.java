@@ -28,11 +28,13 @@ public class AudioPlayerActivity extends AppCompatActivity {
     private SeekBar sb;
     private Thread updateSeekBar;
     private Boolean isPlaying = true;
+    private Boolean isDragging = false;
     private int currentPosition = 0;
     private SeekBar volumeSeekBar = null;
     private AudioManager audioManager = null;
     private TextView maxDuration;
     private TextView minDuration;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,11 +120,9 @@ public class AudioPlayerActivity extends AppCompatActivity {
 
         sb = (SeekBar) findViewById(R.id.seekBar);
 
-
         // Customize SeekBar
         sb.getThumb().mutate().setAlpha(0);
         sb.setPadding(0, 0, 0, 0);
-
 
         // Background Thread to update the progress seekBar
         updateSeekBar = new Thread(){
@@ -139,7 +139,9 @@ public class AudioPlayerActivity extends AppCompatActivity {
 
                         if(isPlaying) {
                             currentPosition = mp.getCurrentPosition();
-                            sb.setProgress(currentPosition);
+                            if(!isDragging) {
+                                sb.setProgress(currentPosition);
+                            }
                         }
 
                         sleep(1000);
@@ -160,19 +162,20 @@ public class AudioPlayerActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-                Log.d("Progress changed", milliSecondsToTimer((long) progress) + "");
+                // Update current duration text
                 minDuration.setText("" + milliSecondsToTimer((long) progress));
 
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                isDragging = true;
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 mp.seekTo(seekBar.getProgress());
+                isDragging = false;
             }
         });
 

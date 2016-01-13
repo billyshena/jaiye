@@ -36,10 +36,10 @@
 
     <com.example.billyshen.jaiye.MaterialPlayPauseButton
     android:id="@+id/materialPlayPauseButton"
-    android:layout_width="40dp"
-    android:layout_height="50dp"
-        android:layout_marginTop="63dp"
-        android:layout_below="@+id/seekBar"
+    android:layout_width="30dp"
+    android:layout_height="30dp"
+        android:layout_marginTop="32dp"
+        android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true" />
 
     <ImageView
@@ -104,5 +104,38 @@
         android:textColor="#80ffffff"
         android:layout_marginRight="10dp"
         android:textSize="12dp" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView5"
+        android:layout_above="@+id/seekBar"
+        android:src="@drawable/imagegradient"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:scaleType="fitXY" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Dreamin&apos;"
+        android:id="@+id/textView"
+        android:layout_below="@+id/minDuration"
+        android:textColor="#FFFAF0"
+        android:textSize="20dp"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="15dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Youssoupha feat Indila"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="3dp"
+        android:textColor="#66FFFAF0" />
 
 </RelativeLayout>
