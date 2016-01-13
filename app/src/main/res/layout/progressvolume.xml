@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@android:id/background">
         <shape>
@@ -14,8 +15,8 @@
             <shape>
                 <corners android:radius="10dp" />
                 <gradient
-                    android:startColor="#FFB400"
-                    android:endColor="#FF184E"
+                    android:startColor="#FFFFFF"
+                    android:endColor="#FFFFFF"
                     android:type="linear"
                     android:angle="180" />
             </shape>

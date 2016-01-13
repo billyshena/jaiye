@@ -66,4 +66,29 @@
         android:layout_marginStart="29dp"
         android:layout_alignTop="@+id/materialPlayPauseButton" />
 
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/volumeControl"
+        android:minHeight="3dip"
+        android:maxHeight="3dip"
+        android:thumbTint="@color/volumeControl"
+        android:progressDrawable="@layout/progressvolume"
+        android:layout_below="@+id/materialPlayPauseButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="28dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="00:00"
+        android:id="@+id/textView"
+        android:layout_below="@+id/seekBar"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textColor="#80ffffff"
+        android:layout_marginLeft="10dp" />
+
 </RelativeLayout>

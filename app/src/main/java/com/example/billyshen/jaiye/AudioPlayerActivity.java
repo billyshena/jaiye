@@ -1,5 +1,6 @@
 package com.example.billyshen.jaiye;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -27,6 +28,8 @@ public class AudioPlayerActivity extends AppCompatActivity {
     private Thread updateSeekBar;
     private Boolean isPlaying = true;
     private int currentPosition = 0;
+    private SeekBar volumeSeekBar = null;
+    private AudioManager audioManager = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,7 @@ public class AudioPlayerActivity extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         super.onCreate(savedInstanceState);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
         setContentView(R.layout.audio_player_main);
 
         // Retrieve intent extra data
@@ -49,6 +53,7 @@ public class AudioPlayerActivity extends AppCompatActivity {
         initPlayPause();
         initMediaPlayer();
         initSeekBar();
+        initVolumeBar();
 
     }
 
@@ -60,13 +65,54 @@ public class AudioPlayerActivity extends AppCompatActivity {
     }
 
 
+    private void initVolumeBar() {
+        try
+        {
+            volumeSeekBar = (SeekBar)findViewById(R.id.volumeControl);
+            audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            volumeSeekBar.setMax(audioManager
+                    .getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+            volumeSeekBar.setProgress(audioManager
+                    .getStreamVolume(AudioManager.STREAM_MUSIC));
+
+
+            volumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
+            {
+                @Override
+                public void onStopTrackingTouch(SeekBar arg0)
+                {
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar arg0)
+                {
+                }
+
+                @Override
+                public void onProgressChanged(SeekBar arg0, int progress, boolean arg2)
+                {
+                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
+                            progress, 0);
+                }
+            });
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+
     private void initSeekBar() {
 
         sb = (SeekBar) findViewById(R.id.seekBar);
+
+        // Customize SeekBar
         sb.getThumb().mutate().setAlpha(0);
         sb.setPadding(0, 0, 0, 0);
 
 
+        // Background Thread to update the progress seekBar
         updateSeekBar = new Thread(){
 
             @Override
@@ -74,8 +120,6 @@ public class AudioPlayerActivity extends AppCompatActivity {
 
                 int totalDuration = mp.getDuration();
                 sb.setMax(totalDuration);
-
-
 
                 while (currentPosition < totalDuration) {
 
@@ -131,16 +175,12 @@ public class AudioPlayerActivity extends AppCompatActivity {
 
                 if (materialPlayPauseButton.getState() == MaterialPlayPauseButton.PAUSE) {
 
-
                     isPlaying = false;
                     mp.pause();
                     materialPlayPauseButton.setToPlay();
-                    Log.d("Stopping music", isPlaying + "");
 
                 } else if (materialPlayPauseButton.getState() == MaterialPlayPauseButton.PLAY) {
 
-
-                    Log.d("Playing again", "YES");
                     mp.seekTo(mp.getCurrentPosition());
                     isPlaying = true;
                     mp.start();
@@ -157,7 +197,6 @@ public class AudioPlayerActivity extends AppCompatActivity {
         String songUrl = "http://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
         mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
-        Log.d("here", "here");
         // Setting DataSource
         try {
             mp.setDataSource(songUrl);
@@ -174,13 +213,11 @@ public class AudioPlayerActivity extends AppCompatActivity {
         // Player playback
         mp.prepareAsync();
 
-        Log.d("here2", "here2");
 
         // Starting player
         mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             public void onPrepared(MediaPlayer mp) {
 
-                Log.d("onPrepared", "YES");
                 mp.start();
                 materialPlayPauseButton.setToPause();
                 updateSeekBar.start();
