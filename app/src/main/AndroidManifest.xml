@@ -23,7 +23,6 @@
 
         <activity
             android:name=".AudioPlayerActivity"
-            android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait" />
 
     </application>

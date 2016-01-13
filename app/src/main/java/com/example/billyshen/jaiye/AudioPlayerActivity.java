@@ -69,6 +69,7 @@ public class AudioPlayerActivity extends AppCompatActivity {
         super.onDestroy();
         mp.release();
         mp = null;
+        isPlaying = false;
     }
 
     // Initialize min / max duration on seekBar
