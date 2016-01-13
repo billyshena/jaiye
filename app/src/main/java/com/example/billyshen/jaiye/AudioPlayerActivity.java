@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -30,6 +31,8 @@ public class AudioPlayerActivity extends AppCompatActivity {
     private int currentPosition = 0;
     private SeekBar volumeSeekBar = null;
     private AudioManager audioManager = null;
+    private TextView maxDuration;
+    private TextView minDuration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,8 @@ public class AudioPlayerActivity extends AppCompatActivity {
             gender = extras.getString("gender");
         }
 
+
+
         initPlayPause();
         initMediaPlayer();
         initSeekBar();
@@ -64,6 +69,12 @@ public class AudioPlayerActivity extends AppCompatActivity {
         mp = null;
     }
 
+    // Initialize min / max duration on seekBar
+    private void initDuration() {
+        maxDuration = (TextView) findViewById(R.id.maxDuration);
+        minDuration = (TextView) findViewById(R.id.minDuration);
+        maxDuration.setText("" + milliSecondsToTimer((long) mp.getDuration()));
+    }
 
     private void initVolumeBar() {
         try
@@ -107,6 +118,7 @@ public class AudioPlayerActivity extends AppCompatActivity {
 
         sb = (SeekBar) findViewById(R.id.seekBar);
 
+
         // Customize SeekBar
         sb.getThumb().mutate().setAlpha(0);
         sb.setPadding(0, 0, 0, 0);
@@ -124,11 +136,14 @@ public class AudioPlayerActivity extends AppCompatActivity {
                 while (currentPosition < totalDuration) {
 
                     try {
-                        sleep(500);
+
                         if(isPlaying) {
                             currentPosition = mp.getCurrentPosition();
                             sb.setProgress(currentPosition);
                         }
+
+                        sleep(1000);
+
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -144,6 +159,9 @@ public class AudioPlayerActivity extends AppCompatActivity {
         sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+                Log.d("Progress changed", milliSecondsToTimer((long) progress) + "");
+                minDuration.setText("" + milliSecondsToTimer((long) progress));
 
             }
 
@@ -217,7 +235,7 @@ public class AudioPlayerActivity extends AppCompatActivity {
         // Starting player
         mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             public void onPrepared(MediaPlayer mp) {
-
+                initDuration();
                 mp.start();
                 materialPlayPauseButton.setToPause();
                 updateSeekBar.start();
@@ -226,4 +244,40 @@ public class AudioPlayerActivity extends AppCompatActivity {
 
 
     }
+
+
+    public  String milliSecondsToTimer(long milliseconds) {
+        String finalTimerString = "";
+        String secondsString = "";
+        String minutesString = "";
+
+        // Convert total duration into time
+        int hours = (int) (milliseconds / (1000 * 60 * 60));
+        int minutes = (int) (milliseconds % (1000 * 60 * 60)) / (1000 * 60);
+        int seconds = (int) ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000);
+        // Add hours if there
+        if (hours > 0) {
+            finalTimerString = hours + ":";
+        }
+
+        // Prepending 0 to seconds if it is one digit
+        if (seconds < 10) {
+            secondsString = "0" + seconds;
+        } else {
+            secondsString = "" + seconds;
+        }
+
+        if (minutes < 10) {
+            minutesString = "0" + minutes;
+        }
+        else{
+            minutesString = "" + minutes;
+        }
+
+        finalTimerString = finalTimerString + minutesString + ":" + secondsString;
+
+        // return timer string
+        return finalTimerString;
+    }
+
 }

@@ -84,11 +84,25 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="00:00"
-        android:id="@+id/textView"
+        android:id="@+id/minDuration"
         android:layout_below="@+id/seekBar"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:textColor="#80ffffff"
-        android:layout_marginLeft="10dp" />
+        android:layout_marginLeft="10dp"
+        android:textSize="12dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="00:00"
+        android:id="@+id/maxDuration"
+        android:layout_below="@+id/seekBar"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textColor="#80ffffff"
+        android:layout_marginRight="10dp"
+        android:textSize="12dp" />
 
 </RelativeLayout>
