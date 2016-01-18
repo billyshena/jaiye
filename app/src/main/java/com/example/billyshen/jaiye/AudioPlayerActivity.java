@@ -55,8 +55,6 @@ public class AudioPlayerActivity extends AppCompatActivity {
             gender = extras.getString("gender");
         }
 
-
-
         initPlayPause();
         initMediaPlayer();
         initSeekBar();

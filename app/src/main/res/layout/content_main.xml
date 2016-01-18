@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_above="@+id/textView1"
-        android:drawSelectorOnTop="true"
+        android:dividerHeight="0dp"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:layout_below="@+id/genders" />
 

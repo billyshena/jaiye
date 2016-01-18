@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.billyshen.jaiye.models.Gender;
+import com.koushikdutta.ion.Ion;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -51,23 +52,19 @@ class GenderListAdapter extends ArrayAdapter<Gender> {
 
         // Init UI elements
         TextView genderTitle = (TextView) customView.findViewById(R.id.genderTitle);
-        genderTitle.setText(gender.getTitle().toUpperCase());
+        genderTitle.setText(gender.getName().toUpperCase());
         ImageView genderImage = (ImageView) customView.findViewById(R.id.genderImage);
-        int id = ctx.getResources().getIdentifier(gender.getResourceUrl(), "drawable", getContext().getPackageName());
-        genderImage.setImageResource(id);
+
+        Log.d("IMAGE URL", getContext().getResources().getString(R.string.picture_url) + "/" + gender.getPicture().getName());
+
+        // Set Gender cover
+        Ion.with(genderImage)
+                .load(getContext().getResources().getString(R.string.picture_url) + "/" + gender.getPicture().getName());
 
         return customView;
     }
 
 
-
-
-    private Bitmap crop(int width, int height)
-    {
-        Bitmap bmp = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.gender1);
-        Bitmap resizedBmp = Bitmap.createScaledBitmap(bmp, width, height, true);
-        return resizedBmp;
-    }
 
 
 }

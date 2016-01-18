@@ -11,8 +11,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.billyshen.jaiye.models.Gender;
+import com.example.billyshen.jaiye.models.Picture;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +32,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initGenders(); // Function to init genders list
-        populateList();
+        // Initialize Genders
+        initGenders();
 
     }
 
@@ -56,16 +65,66 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    /* Init genders through HTTP request */
     private void initGenders() {
 
-        Log.i("okokokok", "okok");
+        /* Initialize request parameters */
+        String api_url = getResources().getString(R.string.api_url) + "/genres/find";
+        JsonObject json = new JsonObject();
+        json.addProperty("populate", "photo");
 
-        genders.add(new Gender("hip hop", "someImageHere", "gender1"));
-        genders.add(new Gender("azonto", "someImageHere", "gender2"));
-        genders.add(new Gender("coupe decale", "someImageHere", "gender3"));
-        genders.add(new Gender("afro trap", "someImageHere", "gender4"));
-        genders.add(new Gender("afro beats", "someImageHere", "gender5"));
+
+        Log.d("initGenders", "true");
+        /* GET all genders */
+        Ion.with(getApplicationContext())
+                .load("POST", api_url)
+                .setJsonObjectBody(json)
+                .asJsonObject()
+                .setCallback(new FutureCallback<JsonObject>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonObject result) {
+
+                        if (e != null) {
+                            Log.d("error", e.toString()) ;
+                            return;
+                        }
+
+                        Log.d("result", result.toString());
+                        populateGenders(result.getAsJsonArray("data"));
+                        populateList();
+
+                    }
+                });
     }
+
+    /* Populate genders ArrayList */
+    private void populateGenders(JsonArray data) {
+
+        String[] fields = { "photo", "_id", "name" };
+
+        for (int i = 0; i < data.size(); i++) {
+
+            // Parse result into readable JSON
+            JsonObject gender_json = data.get(i).getAsJsonObject();
+            JsonObject picture_json = gender_json.getAsJsonObject(fields[0]);
+
+            // Creating Gender object
+            Gender gender = new Gender(
+                    gender_json.get(fields[1]).getAsString(),
+                    new Picture(
+                            picture_json.get(fields[1]).getAsString(),
+                            picture_json.get(fields[2]).getAsString()
+                    ),
+                    gender_json.get(fields[2]).getAsString()
+            );
+
+            // Add Gender result to the list
+            genders.add(gender);
+        }
+
+
+    }
+
 
     private void populateList() {
 
