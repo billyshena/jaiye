@@ -16,6 +16,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.billyshen.jaiye.models.Song;
+
 import java.io.IOException;
 
 /**
@@ -49,11 +51,8 @@ public class AudioPlayerActivity extends AppCompatActivity {
 
         // Retrieve intent extra data
         Bundle extras = getIntent().getExtras();
-        String gender;
+        Song song = (Song) extras.getParcelable("song");
 
-        if (extras != null) {
-            gender = extras.getString("gender");
-        }
 
         initPlayPause();
         initMediaPlayer();

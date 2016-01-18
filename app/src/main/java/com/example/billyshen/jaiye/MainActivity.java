@@ -179,8 +179,10 @@ public class MainActivity extends AppCompatActivity {
 
                                 // Launch Audio Player Activity
                                 Intent intent = new Intent(getBaseContext(), AudioPlayerActivity.class);
-                                // TODO: Pass the selected Gender object
-                                intent.putExtra("gender", "ok");
+                                Bundle b = new Bundle();
+                                b.putParcelable("song", (Parcelable) song);
+                                intent.putExtras(b);
+
                                 startActivity(intent);
 
                             }
