@@ -2,4 +2,6 @@
 <resources>
     <string name="api_url">http://api.jaiye.com</string>
     <string name="picture_url">http://images.jaiye.com</string>
+    <string name="song_url">http://tracks.jaiye.com</string>
+    <string name="song_extension">.mp3</string>
 </resources>

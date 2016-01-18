@@ -55,9 +55,18 @@ public class AudioPlayerActivity extends AppCompatActivity {
 
 
         initPlayPause();
-        initMediaPlayer();
+        initMediaPlayer(song);
         initSeekBar();
         initVolumeBar();
+        initSongInfo(song);
+
+    }
+
+
+    private void initSongInfo(Song param) {
+
+
+
 
     }
 
@@ -211,9 +220,9 @@ public class AudioPlayerActivity extends AppCompatActivity {
     }
 
 
-    private void initMediaPlayer() {
+    private void initMediaPlayer(Song param) {
 
-        String songUrl = "http://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+        String songUrl = getResources().getString(R.string.song_url) + '/' + param.getId() + getResources().getString(R.string.song_extension);
         mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
         // Setting DataSource
