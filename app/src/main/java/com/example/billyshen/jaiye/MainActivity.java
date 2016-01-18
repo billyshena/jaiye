@@ -13,8 +13,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.billyshen.jaiye.models.Author;
 import com.example.billyshen.jaiye.models.Gender;
 import com.example.billyshen.jaiye.models.Picture;
+import com.example.billyshen.jaiye.models.Song;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
@@ -24,6 +26,7 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -85,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onCompleted(Exception e, JsonObject result) {
 
                         if (e != null) {
-                            Log.d("error", e.toString()) ;
+                            Log.d("error", e.toString());
                             return;
                         }
 
@@ -137,11 +140,52 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                // Launch Audio Player Activity
-                Intent intent = new Intent(getBaseContext(), AudioPlayerActivity.class);
-                // TODO: Pass the selected Gender object
-                intent.putExtra("gender", "ok");
-                startActivity(intent);
+                Gender gender = genders.get(position);
+                String api_url = getResources().getString(R.string.api_url) + "/items/random/" + gender.getId();
+
+
+                /* GET Random Song */
+                Ion.with(getApplicationContext())
+                        .load("GET", api_url)
+                        .asJsonObject()
+                        .setCallback(new FutureCallback<JsonObject>() {
+                            @Override
+                            public void onCompleted(Exception e, JsonObject result) {
+
+                                if (e != null) {
+                                    Log.d("error", e.toString());
+                                    return;
+                                }
+
+                                String[] fields = {"_id", "name", "title"};
+                                JsonArray songs = result.getAsJsonArray("data");
+
+                                /* Initialize parameters */
+                                Random rand = new Random();
+                                int max = songs.size();
+                                int min = 0;
+                                int randomNum = rand.nextInt((max - min) + 1) + min;
+                                JsonObject song_json = songs.get(randomNum).getAsJsonObject();
+                                JsonObject author_json = song_json.getAsJsonObject("author");
+
+                                Song song = new Song(
+                                        song_json.get(fields[0]).getAsString(),
+                                        new Author(
+                                                author_json.get(fields[0]).getAsString(),
+                                                author_json.get(fields[1]).getAsString()
+                                        ),
+                                        song_json.get(fields[2]).getAsString()
+                                );
+
+                                // Launch Audio Player Activity
+                                Intent intent = new Intent(getBaseContext(), AudioPlayerActivity.class);
+                                // TODO: Pass the selected Gender object
+                                intent.putExtra("gender", "ok");
+                                startActivity(intent);
+
+                            }
+                        });
+
 
             }
         });
