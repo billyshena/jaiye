@@ -54,19 +54,24 @@ public class AudioPlayerActivity extends AppCompatActivity {
         Song song = (Song) extras.getParcelable("song");
 
 
+        Log.d("Song cover", song.getCover().getName());
         initPlayPause();
         initMediaPlayer(song);
         initSeekBar();
         initVolumeBar();
         initSongInfo(song);
 
+
     }
 
 
     private void initSongInfo(Song param) {
 
+        TextView songTitle = (TextView) findViewById(R.id.songTitle);
+        TextView authorName = (TextView) findViewById(R.id.authorName);
 
-
+        songTitle.setText(param.getTitle());
+        authorName.setText(param.getAuthor().getName());
 
     }
 

@@ -59,6 +59,7 @@ class GenderListAdapter extends ArrayAdapter<Gender> {
 
         // Set Gender cover
         Ion.with(genderImage)
+                .placeholder(R.drawable.gender1)
                 .load(getContext().getResources().getString(R.string.picture_url) + "/" + gender.getPicture().getName());
 
         return customView;

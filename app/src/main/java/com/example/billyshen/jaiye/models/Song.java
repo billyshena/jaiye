@@ -13,11 +13,13 @@ public class Song implements Parcelable {
     private String id;
     private Author author;
     private String title;
+    private Picture cover;
 
-    public Song(String id, Author author, String title) {
+    public Song(String id, Author author, String title, Picture cover) {
         this.id = id;
         this.author = author;
         this.title = title;
+        this.cover = cover;
     }
 
     public String getId() {
@@ -28,14 +30,6 @@ public class Song implements Parcelable {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public Author getAuthor() {
         return author;
     }
@@ -44,12 +38,27 @@ public class Song implements Parcelable {
         this.author = author;
     }
 
+    public String getTitle() {
+        return title;
+    }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Picture getCover() {
+        return cover;
+    }
+
+    public void setCover(Picture cover) {
+        this.cover = cover;
+    }
 
     protected Song(Parcel in) {
         id = in.readString();
         author = (Author) in.readValue(Author.class.getClassLoader());
         title = in.readString();
+        cover = (Picture) in.readValue(Picture.class.getClassLoader());
     }
 
     @Override
@@ -62,6 +71,7 @@ public class Song implements Parcelable {
         dest.writeString(id);
         dest.writeValue(author);
         dest.writeString(title);
+        dest.writeValue(cover);
     }
 
     @SuppressWarnings("unused")

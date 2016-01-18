@@ -167,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
                                 int randomNum = rand.nextInt((max - min) + 1) + min;
                                 JsonObject song_json = songs.get(randomNum).getAsJsonObject();
                                 JsonObject author_json = song_json.getAsJsonObject("author");
+                                JsonObject picture_json = song_json.getAsJsonObject("cover");
 
                                 Song song = new Song(
                                         song_json.get(fields[0]).getAsString(),
@@ -174,7 +175,12 @@ public class MainActivity extends AppCompatActivity {
                                                 author_json.get(fields[0]).getAsString(),
                                                 author_json.get(fields[1]).getAsString()
                                         ),
-                                        song_json.get(fields[2]).getAsString()
+                                        song_json.get(fields[2]).getAsString(),
+                                        new Picture(
+                                                picture_json.get(fields[0]).getAsString(),
+                                                picture_json.get(fields[1]).getAsString()
+                                        )
+
                                 );
 
                                 // Launch Audio Player Activity
