@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,7 +13,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.billyshen.jaiye.models.Author;
 import com.example.billyshen.jaiye.models.Gender;
@@ -22,8 +23,6 @@ import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
-import org.json.JSONArray;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -32,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private List<Gender> genders = new ArrayList<Gender>();
+    private RecyclerView recyclerView;
+    private GenderListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                             return;
                         }
 
-                        Log.d("result", result.toString());
+                        // Populate data
                         populateGenders(result.getAsJsonArray("data"));
                         populateList();
 
@@ -129,74 +130,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    // Populate data into custom RecyclerView
     private void populateList() {
 
-        ArrayAdapter<Gender> adapter = new GenderListAdapter(MainActivity.this, (ArrayList<Gender>) genders);
-        ListView list = (ListView) findViewById(R.id.lv_genders);
-        list.setDivider(null);
-        list.setAdapter(adapter);
+        recyclerView = (RecyclerView) findViewById(R.id.lv_genders);
+        adapter = new GenderListAdapter(getApplicationContext(), genders, recyclerView, this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Gender gender = genders.get(position);
-                String api_url = getResources().getString(R.string.api_url) + "/items/random/" + gender.getId();
-
-
-                /* GET Random Song */
-                Ion.with(getApplicationContext())
-                        .load("GET", api_url)
-                        .asJsonObject()
-                        .setCallback(new FutureCallback<JsonObject>() {
-                            @Override
-                            public void onCompleted(Exception e, JsonObject result) {
-
-                                if (e != null) {
-                                    Log.d("error", e.toString());
-                                    return;
-                                }
-
-                                String[] fields = {"_id", "name", "title"};
-                                JsonArray songs = result.getAsJsonArray("data");
-
-                                /* Initialize parameters */
-                                Random rand = new Random();
-                                int max = songs.size();
-                                int min = 0;
-                                int randomNum = rand.nextInt((max - min) + 1) + min;
-                                JsonObject song_json = songs.get(randomNum).getAsJsonObject();
-                                JsonObject author_json = song_json.getAsJsonObject("author");
-                                JsonObject picture_json = song_json.getAsJsonObject("cover");
-
-                                Song song = new Song(
-                                        song_json.get(fields[0]).getAsString(),
-                                        new Author(
-                                                author_json.get(fields[0]).getAsString(),
-                                                author_json.get(fields[1]).getAsString()
-                                        ),
-                                        song_json.get(fields[2]).getAsString(),
-                                        new Picture(
-                                                picture_json.get(fields[0]).getAsString(),
-                                                picture_json.get(fields[1]).getAsString()
-                                        )
-
-                                );
-
-                                // Launch Audio Player Activity
-                                Intent intent = new Intent(getBaseContext(), AudioPlayerActivity.class);
-                                Bundle b = new Bundle();
-                                b.putParcelable("song", (Parcelable) song);
-                                intent.putExtras(b);
-
-                                startActivity(intent);
-
-                            }
-                        });
-
-
-            }
-        });
     }
 
 

@@ -11,12 +11,14 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.billyshen.jaiye.models.Song;
+import com.koushikdutta.ion.Ion;
 
 import java.io.IOException;
 
@@ -53,8 +55,6 @@ public class AudioPlayerActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         Song song = (Song) extras.getParcelable("song");
 
-
-        Log.d("Song cover", song.getCover().getName());
         initPlayPause();
         initMediaPlayer(song);
         initSeekBar();
@@ -69,10 +69,22 @@ public class AudioPlayerActivity extends AppCompatActivity {
 
         TextView songTitle = (TextView) findViewById(R.id.songTitle);
         TextView authorName = (TextView) findViewById(R.id.authorName);
+        ImageView songCover =  (ImageView) findViewById(R.id.songCover);
+
 
         songTitle.setText(param.getTitle());
         authorName.setText(param.getAuthor().getName());
 
+
+        Log.d("song", param.getCover().getName());
+        Log.d("songId", param.getId());
+        // Set Gender cover
+        Ion.with(getApplicationContext())
+                .load(getResources().getString(R.string.picture_url) + "/" + param.getCover().getName())
+                .noCache()
+                .withBitmap()
+                .placeholder(R.drawable.placeholder)
+                .intoImageView(songCover);
     }
 
     @Override
