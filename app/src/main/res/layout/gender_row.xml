@@ -22,11 +22,28 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
+            android:letterSpacing="0.1"
             android:id="@+id/genderTitle"
-            android:layout_centerVertical="true"
+            android:textColor="#ffffff"
+            android:layout_alignWithParentIfMissing="false"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:textColor="#ffffff" />
+            android:layout_marginTop="85dp"
+            android:textSize="24dp"
+            android:textIsSelectable="false" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Discover !"
+        android:letterSpacing="0.1"
+        android:id="@+id/textView"
+        android:layout_below="@+id/genderTitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="0dp"
+        android:textColor="#ffffff"
+        android:textSize="14dp" />
 
 
 </RelativeLayout>

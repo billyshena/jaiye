@@ -119,7 +119,14 @@ class GenderListAdapter extends RecyclerView.Adapter<GenderViewHolder> implement
                         Random rand = new Random();
                         int max = songs.size() - 1;
                         int min = 0;
-                        int randomNum = rand.nextInt((max - min) + 1) + min;
+                        int randomNum = 0;
+
+                        try{
+                            randomNum = rand.nextInt((max - min) + 1) + min;
+                        }
+                        catch(IllegalArgumentException ill) {
+                            ill.printStackTrace();
+                        }
 
 
                         for(int i = 0; i < songs.size(); i++) {
@@ -151,14 +158,20 @@ class GenderListAdapter extends RecyclerView.Adapter<GenderViewHolder> implement
                         }
 
 
-                        // Launch Audio Player Activity
-                        Intent intent = new Intent(ctx.getApplicationContext(), AudioPlayerActivity.class);
-                        Bundle b = new Bundle();
-                        b.putParcelable("song", (Parcelable) songsList.get(randomNum));
-                        b.putParcelableArrayList("songs", (ArrayList<? extends Parcelable>) songsList);
-                        intent.putExtras(b);
 
-                        activity.startActivity(intent);
+                        try {
+                            // Launch Audio Player Activity
+                            Intent intent = new Intent(ctx.getApplicationContext(), AudioPlayerActivity.class);
+                            Bundle b = new Bundle();
+                            b.putParcelable("song", (Parcelable) songsList.get(randomNum));
+                            b.putParcelableArrayList("songs", (ArrayList<? extends Parcelable>) songsList);
+                            intent.putExtras(b);
+
+                            activity.startActivity(intent);
+                        }
+                        catch(IndexOutOfBoundsException index) {
+                            index.printStackTrace();
+                        }
 
                     }
 
