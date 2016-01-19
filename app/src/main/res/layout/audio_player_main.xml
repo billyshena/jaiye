@@ -46,7 +46,7 @@
     <ImageView
         android:layout_width="15dp"
         android:layout_height="20dp"
-        android:id="@+id/imageView3"
+        android:id="@+id/previousButton"
         android:src="@drawable/previous"
         android:layout_marginRight="29dp"
         android:layout_marginEnd="29dp"
@@ -58,7 +58,7 @@
     <ImageView
         android:layout_width="15dp"
         android:layout_height="20dp"
-        android:id="@+id/imageView4"
+        android:id="@+id/nextButton"
         android:src="@drawable/next"
         android:layout_alignBottom="@+id/materialPlayPauseButton"
         android:layout_toRightOf="@+id/materialPlayPauseButton"

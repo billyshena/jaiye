@@ -81,6 +81,7 @@ class GenderListAdapter extends RecyclerView.Adapter<GenderViewHolder> implement
         Ion
                 .with(holder.genderImage)
                 .placeholder(R.drawable.placeholder)
+                .animateIn(R.layout.fade_in_animation)
                 .load(ctx.getResources().getString(R.string.picture_url) + "/" + gender.getPicture().getName());
 
     }
@@ -112,46 +113,53 @@ class GenderListAdapter extends RecyclerView.Adapter<GenderViewHolder> implement
 
                         String[] fields = {"_id", "name", "title"};
                         JsonArray songs = result.getAsJsonArray("data");
+                        List<Song> songsList = new ArrayList<Song>();
 
                                 /* Initialize parameters */
                         Random rand = new Random();
-                        int max = songs.size();
+                        int max = songs.size() - 1;
                         int min = 0;
-                        Log.d("mmax", max + "");
                         int randomNum = rand.nextInt((max - min) + 1) + min;
 
 
-                        try {
-                            JsonObject song_json = songs.get(randomNum).getAsJsonObject();
-                            JsonObject author_json = song_json.getAsJsonObject("author");
-                            JsonObject picture_json = song_json.getAsJsonObject("cover");
+                        for(int i = 0; i < songs.size(); i++) {
 
-                            Song song = new Song(
-                                    song_json.get(fields[0]).getAsString(),
-                                    new Author(
-                                            author_json.get(fields[0]).getAsString(),
-                                            author_json.get(fields[1]).getAsString()
-                                    ),
-                                    song_json.get(fields[2]).getAsString(),
-                                    new Picture(
-                                            picture_json.get(fields[0]).getAsString(),
-                                            picture_json.get(fields[1]).getAsString()
-                                    )
+                            try {
+                                JsonObject song_json = songs.get(i).getAsJsonObject();
+                                JsonObject author_json = song_json.getAsJsonObject("author");
+                                JsonObject picture_json = song_json.getAsJsonObject("cover");
 
-                            );
+                                Song song = new Song(
+                                        song_json.get(fields[0]).getAsString(),
+                                        new Author(
+                                                author_json.get(fields[0]).getAsString(),
+                                                author_json.get(fields[1]).getAsString()
+                                        ),
+                                        song_json.get(fields[2]).getAsString(),
+                                        new Picture(
+                                                picture_json.get(fields[0]).getAsString(),
+                                                picture_json.get(fields[1]).getAsString()
+                                        )
 
-                            // Launch Audio Player Activity
-                            Intent intent = new Intent(ctx.getApplicationContext(), AudioPlayerActivity.class);
-                            Bundle b = new Bundle();
-                            b.putParcelable("song", (Parcelable) song);
-                            intent.putExtras(b);
+                                );
 
-                            activity.startActivity(intent);
+                                songsList.add(song);
 
+                            } catch (IndexOutOfBoundsException ex) {
+                                ex.printStackTrace();
+                            }
                         }
-                        catch(IndexOutOfBoundsException ex) {
-                            ex.printStackTrace();
-                        }
+
+
+                        // Launch Audio Player Activity
+                        Intent intent = new Intent(ctx.getApplicationContext(), AudioPlayerActivity.class);
+                        Bundle b = new Bundle();
+                        b.putParcelable("song", (Parcelable) songsList.get(randomNum));
+                        b.putParcelableArrayList("songs", (ArrayList<? extends Parcelable>) songsList);
+                        intent.putExtras(b);
+
+                        activity.startActivity(intent);
+
                     }
 
 

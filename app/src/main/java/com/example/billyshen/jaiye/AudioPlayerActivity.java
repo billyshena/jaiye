@@ -1,10 +1,12 @@
 package com.example.billyshen.jaiye;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -17,15 +19,23 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.billyshen.jaiye.models.Author;
+import com.example.billyshen.jaiye.models.Picture;
 import com.example.billyshen.jaiye.models.Song;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created by billyshen on 10/01/2016.
  */
-public class AudioPlayerActivity extends AppCompatActivity {
+public class AudioPlayerActivity extends AppCompatActivity implements View.OnClickListener {
 
     private MediaPlayer mp = new MediaPlayer();
     private MaterialPlayPauseButton materialPlayPauseButton;
@@ -38,6 +48,8 @@ public class AudioPlayerActivity extends AppCompatActivity {
     private AudioManager audioManager = null;
     private TextView maxDuration;
     private TextView minDuration;
+    private List<Song> songs = Collections.emptyList();
+
 
 
     @Override
@@ -54,6 +66,14 @@ public class AudioPlayerActivity extends AppCompatActivity {
         // Retrieve intent extra data
         Bundle extras = getIntent().getExtras();
         Song song = (Song) extras.getParcelable("song");
+        songs = extras.getParcelableArrayList("songs");
+
+
+        // Initialize previous/next listeners
+        ImageView prevButton = (ImageView) findViewById(R.id.previousButton);
+        ImageView nextButton = (ImageView) findViewById(R.id.nextButton);
+        prevButton.setOnClickListener(this);
+        nextButton.setOnClickListener(this);
 
         initPlayPause();
         initMediaPlayer(song);
@@ -76,8 +96,6 @@ public class AudioPlayerActivity extends AppCompatActivity {
         authorName.setText(param.getAuthor().getName());
 
 
-        Log.d("song", param.getCover().getName());
-        Log.d("songId", param.getId());
         // Set Gender cover
         Ion.with(getApplicationContext())
                 .load(getResources().getString(R.string.picture_url) + "/" + param.getCover().getName())
@@ -265,7 +283,11 @@ public class AudioPlayerActivity extends AppCompatActivity {
                 initDuration();
                 mp.start();
                 materialPlayPauseButton.setToPause();
-                updateSeekBar.start();
+
+                if (updateSeekBar.getState() == Thread.State.NEW)
+                {
+                    updateSeekBar.start();
+                }
             }
         });
 
@@ -307,4 +329,29 @@ public class AudioPlayerActivity extends AppCompatActivity {
         return finalTimerString;
     }
 
+    @Override
+    public void onClick(View v) {
+
+
+        Log.d("songs size", songs.size() + "");
+
+        Random rand = new Random();
+        int max = songs.size() - 1;
+        int min = 0;
+        int randomNum = rand.nextInt((max - min) + 1) + min;
+
+        // Release current MP
+        mp.release();
+        mp = null;
+        isPlaying = false;
+        mp = new MediaPlayer();
+        Song song = songs.get(randomNum);
+        Log.d("Song", song.getId());
+        initMediaPlayer(song);
+        initSongInfo(song);
+        isPlaying = true;
+
+
+
+    }
 }
