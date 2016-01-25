@@ -49,6 +49,7 @@ class GenderListAdapter extends RecyclerView.Adapter<GenderViewHolder> implement
     List<Gender> genders = Collections.emptyList();
     RecyclerView rv;
     Activity activity;
+    Gender gender;
 
 
     public GenderListAdapter(Context context, List<Gender> genders, RecyclerView rv, Activity activity) {
@@ -95,7 +96,7 @@ class GenderListAdapter extends RecyclerView.Adapter<GenderViewHolder> implement
     public void onClick(View v) {
 
         int itemPosition = rv.getChildAdapterPosition(v);
-        Gender gender = genders.get(itemPosition);
+        gender = genders.get(itemPosition);
         String api_url = ctx.getResources().getString(R.string.api_url) + "/items/random/" + gender.getId();
 
         Log.d("clicked on", gender.getId());
@@ -164,6 +165,7 @@ class GenderListAdapter extends RecyclerView.Adapter<GenderViewHolder> implement
                             Intent intent = new Intent(ctx.getApplicationContext(), AudioPlayerActivity.class);
                             Bundle b = new Bundle();
                             b.putParcelable("song", (Parcelable) songsList.get(randomNum));
+                            b.putParcelable("gender", (Parcelable) gender);
                             b.putParcelableArrayList("songs", (ArrayList<? extends Parcelable>) songsList);
                             intent.putExtras(b);
 

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.billyshen.jaiye.models.Author;
+import com.example.billyshen.jaiye.models.Gender;
 import com.example.billyshen.jaiye.models.Picture;
 import com.example.billyshen.jaiye.models.Song;
 import com.google.gson.JsonArray;
@@ -35,7 +36,7 @@ import java.util.Random;
 /**
  * Created by billyshen on 10/01/2016.
  */
-public class AudioPlayerActivity extends AppCompatActivity implements View.OnClickListener {
+public class AudioPlayerActivity extends AppCompatActivity{
 
     private MediaPlayer mp = new MediaPlayer();
     private MaterialPlayPauseButton materialPlayPauseButton;
@@ -66,34 +67,24 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
         // Retrieve intent extra data
         Bundle extras = getIntent().getExtras();
         Song song = (Song) extras.getParcelable("song");
+        Gender gender = (Gender) extras.getParcelable("gender");
         songs = extras.getParcelableArrayList("songs");
-
-
-        // Initialize previous/next listeners
-        ImageView prevButton = (ImageView) findViewById(R.id.previousButton);
-        ImageView nextButton = (ImageView) findViewById(R.id.nextButton);
-        prevButton.setOnClickListener(this);
-        nextButton.setOnClickListener(this);
 
         initPlayPause();
         initMediaPlayer(song);
-        initSeekBar();
         initVolumeBar();
-        initSongInfo(song);
+        initSongInfo(song, gender);
 
 
     }
 
 
-    private void initSongInfo(Song param) {
+    private void initSongInfo(Song param, Gender gender) {
 
         TextView songTitle = (TextView) findViewById(R.id.songTitle);
-        TextView authorName = (TextView) findViewById(R.id.authorName);
         ImageView songCover =  (ImageView) findViewById(R.id.songCover);
 
-
-        songTitle.setText(param.getTitle());
-        authorName.setText(param.getAuthor().getName());
+        songTitle.setText(gender.getName().toUpperCase());
 
 
         // Set Gender cover
@@ -113,12 +104,7 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
         isPlaying = false;
     }
 
-    // Initialize min / max duration on seekBar
-    private void initDuration() {
-        maxDuration = (TextView) findViewById(R.id.maxDuration);
-        minDuration = (TextView) findViewById(R.id.minDuration);
-        maxDuration.setText("" + milliSecondsToTimer((long) mp.getDuration()));
-    }
+
 
     private void initVolumeBar() {
         try
@@ -157,71 +143,6 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-
-    private void initSeekBar() {
-
-        sb = (SeekBar) findViewById(R.id.seekBar);
-
-        // Customize SeekBar
-        sb.getThumb().mutate().setAlpha(0);
-        sb.setPadding(0, 0, 0, 0);
-
-        // Background Thread to update the progress seekBar
-        updateSeekBar = new Thread(){
-
-            @Override
-            public void run() {
-
-                int totalDuration = mp.getDuration();
-                sb.setMax(totalDuration);
-
-                while (currentPosition < totalDuration) {
-
-                    try {
-
-                        if(isPlaying) {
-                            currentPosition = mp.getCurrentPosition();
-                            if(!isDragging) {
-                                sb.setProgress(currentPosition);
-                            }
-                        }
-
-                        sleep(1000);
-
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-            }
-
-        };
-
-
-        // Set drag/drop events on SeekBar
-        sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-                // Update current duration text
-                minDuration.setText("" + milliSecondsToTimer((long) progress));
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                isDragging = true;
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                mp.seekTo(seekBar.getProgress());
-                isDragging = false;
-            }
-        });
-
-    }
 
     private void initPlayPause() {
 
@@ -280,14 +201,8 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
         // Starting player
         mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             public void onPrepared(MediaPlayer mp) {
-                initDuration();
                 mp.start();
                 materialPlayPauseButton.setToPause();
-
-                if (updateSeekBar.getState() == Thread.State.NEW)
-                {
-                    updateSeekBar.start();
-                }
             }
         });
 
@@ -295,63 +210,5 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
     }
 
 
-    public  String milliSecondsToTimer(long milliseconds) {
-        String finalTimerString = "";
-        String secondsString = "";
-        String minutesString = "";
 
-        // Convert total duration into time
-        int hours = (int) (milliseconds / (1000 * 60 * 60));
-        int minutes = (int) (milliseconds % (1000 * 60 * 60)) / (1000 * 60);
-        int seconds = (int) ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000);
-        // Add hours if there
-        if (hours > 0) {
-            finalTimerString = hours + ":";
-        }
-
-        // Prepending 0 to seconds if it is one digit
-        if (seconds < 10) {
-            secondsString = "0" + seconds;
-        } else {
-            secondsString = "" + seconds;
-        }
-
-        if (minutes < 10) {
-            minutesString = "0" + minutes;
-        }
-        else{
-            minutesString = "" + minutes;
-        }
-
-        finalTimerString = finalTimerString + minutesString + ":" + secondsString;
-
-        // return timer string
-        return finalTimerString;
-    }
-
-    @Override
-    public void onClick(View v) {
-
-
-        Log.d("songs size", songs.size() + "");
-
-        Random rand = new Random();
-        int max = songs.size() - 1;
-        int min = 0;
-        int randomNum = rand.nextInt((max - min) + 1) + min;
-
-        // Release current MP
-        mp.release();
-        mp = null;
-        isPlaying = false;
-        mp = new MediaPlayer();
-        Song song = songs.get(randomNum);
-        Log.d("Song", song.getId());
-        initMediaPlayer(song);
-        initSongInfo(song);
-        isPlaying = true;
-
-
-
-    }
 }
