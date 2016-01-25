@@ -13,7 +13,6 @@
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         android:padding="0dp"
-        android:background="?android:attr/selectableItemBackground"
         android:src="@drawable/gender1" />
 
 
@@ -26,24 +25,39 @@
             android:id="@+id/genderTitle"
             android:textColor="#ffffff"
             android:layout_alignWithParentIfMissing="false"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="85dp"
             android:textSize="24dp"
-            android:textIsSelectable="false" />
+            android:textIsSelectable="false"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="false"
+            android:layout_alignBottom="@+id/genderImage"
+            android:layout_marginLeft="30dp"
+            android:layout_marginBottom="40dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Discover !"
+        android:text="Radio"
         android:letterSpacing="0.1"
         android:id="@+id/textView"
-        android:layout_below="@+id/genderTitle"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="0dp"
-        android:textColor="#ffffff"
-        android:textSize="14dp" />
+        android:textColor="#9a9a9a"
+        android:textSize="14dp"
+        android:layout_above="@+id/genderTitle"
+        android:layout_alignLeft="@+id/genderTitle"
+        android:layout_alignStart="@+id/genderTitle"
+        android:layout_marginBottom="-3dp" />
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:id="@+id/imageView"
+        android:layout_alignTop="@+id/genderTitle"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/gendericon2"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="5dp" />
 
 
 </RelativeLayout>
