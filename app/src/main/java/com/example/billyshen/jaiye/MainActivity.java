@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,12 +46,13 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private GenderListAdapter adapter;
     private SlidingUpPanelLayout mLayout;
+    private RelativeLayout miniPlayer;
 
 
 
     /* Media Player - TODO: Refractor into a Service to handle the AudioPlayer */
 
-    Button backButton;
+    ImageView backButton;
     static Context context;
     static MediaPlayer mp = new MediaPlayer();
     static MaterialPlayPauseButton materialPlayPauseButton;
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     static AudioManager audioManager = null;
     static TextView songTitle;
     static ImageView songCover;
+
 
 
     @Override
@@ -68,22 +71,71 @@ public class MainActivity extends AppCompatActivity {
         context = this;
 
 
+
         // Configure the Slider panel and hide it by default
         mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
         mLayout.getChildAt(1).setOnClickListener(null);
         mLayout.setPanelHeight(0);
 
+
         // Fetch UI Elements to setup song Info
         songTitle = (TextView) findViewById(R.id.songTitle);
         songCover = (ImageView) findViewById(R.id.songCover);
-        backButton = (Button) findViewById(R.id.backButton);
+        backButton = (ImageView) findViewById(R.id.backButton);
+        miniPlayer = (RelativeLayout) findViewById(R.id.miniPlayer);
 
+
+        // Backbutton to minimize the Player
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("clicked", "yes");
+                miniPlayer.setVisibility(View.VISIBLE);
                 mLayout.setPanelHeight(100);
                 mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            }
+        });
+
+
+        // Expand full screen on miniPlayer click action
+        miniPlayer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                miniPlayer.setVisibility(View.INVISIBLE);
+                mLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+            }
+        });
+
+
+        // Listen to drag up event on the sliding panel
+        mLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+
+            }
+
+            @Override
+            public void onPanelCollapsed(View panel) {
+
+                miniPlayer.setVisibility(View.VISIBLE);
+                mLayout.setPanelHeight(100);
+
+            }
+
+            @Override
+            public void onPanelExpanded(View panel) {
+                miniPlayer.setVisibility(View.INVISIBLE);
+
+            }
+
+            @Override
+            public void onPanelAnchored(View panel) {
+
+            }
+
+            @Override
+            public void onPanelHidden(View panel) {
+
             }
         });
 
@@ -100,6 +152,13 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         // getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mp.release();
+        mp = null;
     }
 
     @Override
@@ -195,13 +254,13 @@ public class MainActivity extends AppCompatActivity {
     public static void startAudioPlayer(Song song, Gender gender) {
 
 
-
         if(mp != null) {
             mp.release();
             mp = null;
         }
 
         mp = new MediaPlayer();
+
         /* Initilize play/pause button */
         String songUrl = context.getResources().getString(R.string.song_url) + '/' + song.getId() + context.getResources().getString(R.string.song_extension);
         mp.setAudioStreamType(AudioManager.STREAM_MUSIC);

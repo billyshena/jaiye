@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -58,6 +59,8 @@ class GenderListAdapter extends RecyclerView.Adapter<GenderViewHolder> implement
     SlidingUpPanelLayout mLayout;
     Song song;
     Gender currentGender;
+    RelativeLayout miniPlayer;
+    TextView miniSongTitle;
 
 
 
@@ -76,6 +79,9 @@ class GenderListAdapter extends RecyclerView.Adapter<GenderViewHolder> implement
 
         View view = inflater.inflate(R.layout.gender_row, parent, false);
         GenderViewHolder holder = new GenderViewHolder(view);
+
+        miniPlayer = (RelativeLayout) activity.findViewById(R.id.miniPlayer);
+        miniSongTitle = (TextView) activity.findViewById(R.id.miniSongTitle);
 
         // set recyclerview click listener
         view.setOnClickListener(this);
@@ -158,15 +164,19 @@ class GenderListAdapter extends RecyclerView.Adapter<GenderViewHolder> implement
                                 return;
                             }
 
+
                             // Expand sliding panel
                             mLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                            miniPlayer.setVisibility(View.INVISIBLE);
 
-
+                            // If current Radio is already playing, then just keep playing
                             if(currentGender != null && currentGender.getId().equals(gender.getId())) {
                                 return;
                             }
 
+                            miniSongTitle.setText(song.getTitle());
                             currentGender = gender;
+
                             // Trigger AudioPlayer function - Start it from MainActivity
                             activity.startAudioPlayer(song, gender);
 
