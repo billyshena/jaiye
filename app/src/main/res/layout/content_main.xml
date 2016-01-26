@@ -9,19 +9,9 @@
         android:id="@+id/lv_genders"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/textView1"
         android:layout_below="@+id/genders">
 
     </android.support.v7.widget.RecyclerView>
-
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="fill_parent"
-        android:layout_height="100dp"
-        android:gravity="center"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:background="#191919" />
 
     <TextView
         android:id="@+id/genders"
@@ -35,11 +25,4 @@
         android:background="#212121"
         android:textColor="#ffffff" />
 
-    <ImageView
-        android:layout_width="20dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView2"
-        android:layout_alignBottom="@+id/textView1"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/logo" />
 </RelativeLayout>

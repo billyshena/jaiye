@@ -64,6 +64,8 @@ public class AudioPlayerActivity extends AppCompatActivity{
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         setContentView(R.layout.audio_player_main);
 
+        Log.d("AudioPlayerActivity", "initialized");
+
         // Retrieve intent extra data
         Bundle extras = getIntent().getExtras();
         Song song = (Song) extras.getParcelable("song");

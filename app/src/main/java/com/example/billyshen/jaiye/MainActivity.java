@@ -1,6 +1,10 @@
 package com.example.billyshen.jaiye;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +16,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SeekBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.billyshen.jaiye.models.Author;
 import com.example.billyshen.jaiye.models.Gender;
@@ -22,7 +31,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -33,15 +44,54 @@ public class MainActivity extends AppCompatActivity {
     private List<Gender> genders = new ArrayList<Gender>();
     private RecyclerView recyclerView;
     private GenderListAdapter adapter;
+    private SlidingUpPanelLayout mLayout;
+
+
+
+    /* Media Player - TODO: Refractor into a Service to handle the AudioPlayer */
+
+    Button backButton;
+    static Context context;
+    static MediaPlayer mp = new MediaPlayer();
+    static MaterialPlayPauseButton materialPlayPauseButton;
+    static SeekBar volumeSeekBar = null;
+    static AudioManager audioManager = null;
+    static TextView songTitle;
+    static ImageView songCover;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context = this;
+
+
+        // Configure the Slider panel and hide it by default
+        mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        mLayout.getChildAt(1).setOnClickListener(null);
+        mLayout.setPanelHeight(0);
+
+        // Fetch UI Elements to setup song Info
+        songTitle = (TextView) findViewById(R.id.songTitle);
+        songCover = (ImageView) findViewById(R.id.songCover);
+        backButton = (Button) findViewById(R.id.backButton);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("clicked", "yes");
+                mLayout.setPanelHeight(100);
+                mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            }
+        });
 
         // Initialize Genders
         initGenders();
+        initPlayPause();
+        initVolumeBar();
+
 
     }
 
@@ -134,12 +184,135 @@ public class MainActivity extends AppCompatActivity {
     private void populateList() {
 
         recyclerView = (RecyclerView) findViewById(R.id.lv_genders);
-        adapter = new GenderListAdapter(getApplicationContext(), genders, recyclerView, this);
+        adapter = new GenderListAdapter(getApplicationContext(), genders, recyclerView, this, mLayout);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
     }
 
+
+    // Initialize Audio Player
+    public static void startAudioPlayer(Song song, Gender gender) {
+
+
+
+        if(mp != null) {
+            mp.release();
+            mp = null;
+        }
+
+        mp = new MediaPlayer();
+        /* Initilize play/pause button */
+        String songUrl = context.getResources().getString(R.string.song_url) + '/' + song.getId() + context.getResources().getString(R.string.song_extension);
+        mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        songTitle.setText(gender.getName().toUpperCase());
+
+
+        // Set Gender cover
+        Ion.with(context.getApplicationContext())
+                .load(context.getResources().getString(R.string.picture_url) + "/" + song.getCover().getName())
+                .noCache()
+                .withBitmap()
+                .placeholder(R.drawable.placeholder)
+                .intoImageView(songCover);
+
+
+        // Setting DataSource
+        try {
+            mp.setDataSource(songUrl);
+        } catch (IllegalArgumentException e) {
+            Toast.makeText(context.getApplicationContext(), "You might not set the URI correctly!", Toast.LENGTH_LONG).show();
+        } catch (SecurityException e) {
+            Toast.makeText(context.getApplicationContext(), "You might not set the URI correctly!", Toast.LENGTH_LONG).show();
+        } catch (IllegalStateException e) {
+            Toast.makeText(context.getApplicationContext(), "You might not set the URI correctly!", Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Player playback
+        mp.prepareAsync();
+
+
+        // Starting player
+        mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            public void onPrepared(MediaPlayer mp) {
+                mp.start();
+                materialPlayPauseButton.setToPause();
+            }
+        });
+
+
+
+    }
+
+
+    private void initPlayPause() {
+
+        // Init play pause button
+        materialPlayPauseButton = (MaterialPlayPauseButton) findViewById(R.id.materialPlayPauseButton);
+
+        materialPlayPauseButton.setColor(Color.WHITE);
+
+        materialPlayPauseButton.setAnimDuration(300);
+
+        materialPlayPauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (materialPlayPauseButton.getState() == MaterialPlayPauseButton.PAUSE) {
+                    mp.pause();
+                    materialPlayPauseButton.setToPlay();
+
+                } else if (materialPlayPauseButton.getState() == MaterialPlayPauseButton.PLAY) {
+
+                    mp.seekTo(mp.getCurrentPosition());
+                    mp.start();
+                    materialPlayPauseButton.setToPause();
+                }
+
+            }
+        });
+    }
+
+
+
+    private void initVolumeBar() {
+        try
+        {
+            volumeSeekBar = (SeekBar)findViewById(R.id.volumeControl);
+            audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            volumeSeekBar.setMax(audioManager
+                    .getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+            volumeSeekBar.setProgress(audioManager
+                    .getStreamVolume(AudioManager.STREAM_MUSIC));
+
+
+            volumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
+            {
+                @Override
+                public void onStopTrackingTouch(SeekBar arg0)
+                {
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar arg0)
+                {
+                }
+
+                @Override
+                public void onProgressChanged(SeekBar arg0, int progress, boolean arg2)
+                {
+                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
+                            progress, 0);
+                }
+            });
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
 
 

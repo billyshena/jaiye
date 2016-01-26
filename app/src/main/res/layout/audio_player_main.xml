@@ -2,7 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/dragView"
+    android:clickable="true"
+    android:focusable="false"
     android:background="#191919">
+
 
 
     <ImageView
@@ -32,7 +36,7 @@
         android:maxHeight="3dip"
         android:thumbTint="@color/volumeControl"
         android:progressDrawable="@layout/progressvolume"
-        android:layout_below="@+id/imageView3"
+        android:layout_below="@+id/playButtonShape"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="28dp" />
@@ -76,7 +80,7 @@
     <ImageView
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:id="@+id/imageView3"
+        android:id="@+id/playButtonShape"
         android:src="@drawable/playbuttonshape"
         android:layout_below="@+id/songTitle"
         android:layout_centerHorizontal="true"
@@ -85,5 +89,17 @@
         android:layout_alignParentEnd="false"
         android:layout_alignRight="@+id/materialPlayPauseButton"
         android:layout_marginRight="-22dp" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="20dp"
+        android:layout_height="12dp"
+        android:id="@+id/backButton"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/backbutton"
+        android:layout_marginLeft="21dp"
+        android:layout_marginTop="25dp" />
 
 </RelativeLayout>

@@ -9,9 +9,12 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Display;
@@ -21,6 +24,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.billyshen.jaiye.models.Author;
@@ -31,6 +35,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -48,16 +53,21 @@ class GenderListAdapter extends RecyclerView.Adapter<GenderViewHolder> implement
     private LayoutInflater inflater;
     List<Gender> genders = Collections.emptyList();
     RecyclerView rv;
-    Activity activity;
+    MainActivity activity;
     Gender gender;
+    SlidingUpPanelLayout mLayout;
+    Song song;
+    Gender currentGender;
 
 
-    public GenderListAdapter(Context context, List<Gender> genders, RecyclerView rv, Activity activity) {
+
+    public GenderListAdapter(Context context, List<Gender> genders, RecyclerView rv, MainActivity activity, SlidingUpPanelLayout layout) {
         inflater = LayoutInflater.from(context);
         ctx = context;
         this.genders = genders;
         this.rv = rv;
         this.activity = activity;
+        this.mLayout = layout;
     }
 
     @Override
@@ -116,62 +126,52 @@ class GenderListAdapter extends RecyclerView.Adapter<GenderViewHolder> implement
                         JsonArray songs = result.getAsJsonArray("data");
                         List<Song> songsList = new ArrayList<Song>();
 
-                                /* Initialize parameters */
-                        Random rand = new Random();
-                        int max = songs.size() - 1;
-                        int min = 0;
-                        int randomNum = 0;
 
-                        try{
-                            randomNum = rand.nextInt((max - min) + 1) + min;
+                        // Convert into Song object
+                        try {
+                            JsonObject song_json = songs.get(0).getAsJsonObject();
+                            JsonObject author_json = song_json.getAsJsonObject("author");
+                            JsonObject picture_json = song_json.getAsJsonObject("cover");
+
+                            song = new Song(
+                                    song_json.get(fields[0]).getAsString(),
+                                    new Author(
+                                            author_json.get(fields[0]).getAsString(),
+                                            author_json.get(fields[1]).getAsString()
+                                    ),
+                                    song_json.get(fields[2]).getAsString(),
+                                    new Picture(
+                                            picture_json.get(fields[0]).getAsString(),
+                                            picture_json.get(fields[1]).getAsString()
+                                    )
+
+                            );
+
+                        } catch (IndexOutOfBoundsException ex) {
+                            ex.printStackTrace();
                         }
-                        catch(IllegalArgumentException ill) {
-                            ill.printStackTrace();
-                        }
-
-
-                        for(int i = 0; i < songs.size(); i++) {
-
-                            try {
-                                JsonObject song_json = songs.get(i).getAsJsonObject();
-                                JsonObject author_json = song_json.getAsJsonObject("author");
-                                JsonObject picture_json = song_json.getAsJsonObject("cover");
-
-                                Song song = new Song(
-                                        song_json.get(fields[0]).getAsString(),
-                                        new Author(
-                                                author_json.get(fields[0]).getAsString(),
-                                                author_json.get(fields[1]).getAsString()
-                                        ),
-                                        song_json.get(fields[2]).getAsString(),
-                                        new Picture(
-                                                picture_json.get(fields[0]).getAsString(),
-                                                picture_json.get(fields[1]).getAsString()
-                                        )
-
-                                );
-
-                                songsList.add(song);
-
-                            } catch (IndexOutOfBoundsException ex) {
-                                ex.printStackTrace();
-                            }
-                        }
-
 
 
                         try {
-                            // Launch Audio Player Activity
-                            Intent intent = new Intent(ctx.getApplicationContext(), AudioPlayerActivity.class);
-                            Bundle b = new Bundle();
-                            b.putParcelable("song", (Parcelable) songsList.get(randomNum));
-                            b.putParcelable("gender", (Parcelable) gender);
-                            b.putParcelableArrayList("songs", (ArrayList<? extends Parcelable>) songsList);
-                            intent.putExtras(b);
 
-                            activity.startActivity(intent);
-                        }
-                        catch(IndexOutOfBoundsException index) {
+                            if(song == null) {
+                                return;
+                            }
+
+                            // Expand sliding panel
+                            mLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+
+
+                            if(currentGender != null && currentGender.getId().equals(gender.getId())) {
+                                return;
+                            }
+
+                            currentGender = gender;
+                            // Trigger AudioPlayer function - Start it from MainActivity
+                            activity.startAudioPlayer(song, gender);
+
+
+                        } catch (IndexOutOfBoundsException index) {
                             index.printStackTrace();
                         }
 

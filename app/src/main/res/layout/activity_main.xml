@@ -7,14 +7,54 @@
     android:fitsSystemWindows="true"
     tools:context="com.example.billyshen.jaiye.MainActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        xmlns:sothree="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/sliding_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        sothree:umanoOverlay="true"
+        sothree:umanoParallaxOffset="10dp"
+        sothree:umanoDragView="@+id/dragView"
+        sothree:umanoPanelHeight="68dp"
+        sothree:umanoShadowHeight="4dp">
 
-    </android.support.design.widget.AppBarLayout>
+        <!-- Content main xml -->
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:orientation="vertical" >
 
-    <include layout="@layout/content_main" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/lv_genders"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/genders">
+
+            </android.support.v7.widget.RecyclerView>
+
+            <TextView
+                android:id="@+id/genders"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:layout_alignParentTop="true"
+                android:orientation="vertical"
+                android:layout_centerHorizontal="true"
+                android:text="JAIYE RADIOS"
+                android:background="#212121"
+                android:textColor="#ffffff" />
+
+        </RelativeLayout>
+
+
+        <!-- AudioPlayer xml -->
+        <include layout="@layout/audio_player_main"/>
+
+
+
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
 
 
